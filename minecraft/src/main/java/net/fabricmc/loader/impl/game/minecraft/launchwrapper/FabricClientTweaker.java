@@ -26,6 +26,6 @@ public class FabricClientTweaker extends FabricTweaker {
 
 	@Override
 	public String getLaunchTarget() {
-		return "net.minecraft.client.main.Main";
+		return "cpw.mods.modlauncher.Launcher";
 	}
 }

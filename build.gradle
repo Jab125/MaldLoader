@@ -12,13 +12,10 @@ plugins {
 	id 'maven-publish'
 	id 'checkstyle'
 	id 'org.cadixdev.licenser' version '0.6.1'
-	id 'fabric-loom' version '0.11-SNAPSHOT' apply false
+	id 'dev.architectury.loom' version '0.11.0-SNAPSHOT' apply false
 	id 'com.github.johnrengelman.shadow' version '7.1.2'
 	id "me.modmuss50.remotesign" version "0.2.4"
 }
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = "fabric-loader"
 
@@ -34,6 +31,10 @@ allprojects {
 	version = (constantsSource =~ /\s+VERSION\s*=\s*"(.*)";/)[0][1] + (ENV.GITHUB_ACTIONS ? "" : "+local")
 
 	repositories {
+		maven {
+			name = "Forge"
+			url = "https://maven.minecraftforge.net/"
+		}
 		maven {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
@@ -57,6 +58,11 @@ configurations {
 }
 
 dependencies {
+	// FML dependencies
+	implementation('net.minecraftforge:accesstransformers:8.0.4')
+	api('net.minecraftforge:forgespi:4.0.+')
+	api('net.minecraftforge:coremods:5.0.+')
+
 	// fabric-loader dependencies
 	api "org.ow2.asm:asm:${project.asm_version}"
 	api "org.ow2.asm:asm-analysis:${project.asm_version}"
@@ -215,11 +221,11 @@ tasks.build.dependsOn "copyJson"
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
 
-	// The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
+	// The Minecraft launcher currently installs Java 17 for users, so your mod probably wants to target Java 17 too
 	// JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
 	// We'll use that if it's available, but otherwise we'll use the older option.
 	if (JavaVersion.current().isJava9Compatible()) {
-		it.options.release = 8
+		it.options.release = 17
 	}
 }
 
@@ -228,7 +234,6 @@ javadoc {
 		if (file("README.html").exists()) {
 			overview = "README.html"
 		}
-		source = "8"
 		encoding = 'UTF-8'
 		charSet = 'UTF-8'
 		memberLevel = JavadocMemberLevel.PACKAGE

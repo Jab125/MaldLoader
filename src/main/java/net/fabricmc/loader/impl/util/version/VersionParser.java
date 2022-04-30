@@ -42,6 +42,14 @@ public final class VersionParser {
 			throw new VersionParsingException("Version must be a non-empty string!");
 		}
 
+		if (s.contains("-")) {
+			// Assume we are dealing with forge version. Find a real version
+			String[] split = s.split("-");
+			if(split.length == 6) {
+				return new SemanticVersionImpl(split[1], false);
+			}
+		}
+
 		return new SemanticVersionImpl(s, false);
 	}
 }

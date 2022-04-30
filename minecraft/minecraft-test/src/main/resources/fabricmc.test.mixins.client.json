@@ -1,10 +1,14 @@
 {
-    "required": true,
-    "package": "net.fabricmc.minecraft.test.mixin",
-    "compatibilityLevel": "JAVA_8",
-    "mixins": [
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    }
+  "required": true,
+  "package": "net.fabricmc.minecraft.test.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ForgeClientUserdevLaunchHandlerMixin",
+    "LaunchServiceHandlerMixin",
+    "ModularURLHandlerMixin",
+    "ModuleLayerHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }
