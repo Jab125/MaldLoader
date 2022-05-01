@@ -15,7 +15,8 @@
     "ModuleLayerHandlerMixin",
     "ServiceLoaderUtilsMixin",
     "TransformationServiceDecoratorMixin",
-    "TransformationServicesHandlerMixin"
+    "TransformationServicesHandlerMixin",
+    "UnionFileSystemProviderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

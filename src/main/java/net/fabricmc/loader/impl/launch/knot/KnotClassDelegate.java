@@ -37,6 +37,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.Manifest;
 
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.commons.ClassRemapper;
+import org.objectweb.asm.commons.Remapper;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 
 import net.fabricmc.api.EnvType;
@@ -400,7 +404,22 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 
 	private byte[] getPostMixinClassByteArray(String name, boolean allowFromParent) {
 		byte[] transformedClassArray = getPreMixinClassByteArray(name, allowFromParent);
-
+//		if(name.contains("cpw") && transformedClassArray != null) {
+//			ClassWriter writer = new ClassWriter(0);
+//			new ClassReader(transformedClassArray).accept(new ClassRemapper(writer, new Remapper() {
+//				@Override
+//				public String map(String internalName) {
+//					if(internalName.equals("cpw/mods/cl/ModuleClassLoader")) {
+//						return "net/fabricmc/loader/impl/launch/knot/KnotClassLoader";
+//					}
+//					if(internalName.equals("cpw/mods/modlauncher/TransformingClassLoader")) {
+//						return "net/fabricmc/loader/impl/launch/knot/KnotClassLoader";
+//					}
+//					return super.map(internalName);
+//				}
+//			}), 0);
+//			transformedClassArray = writer.toByteArray();
+//		}
 		if (!transformInitialized || !canTransformClass(name)) {
 			return transformedClassArray;
 		}

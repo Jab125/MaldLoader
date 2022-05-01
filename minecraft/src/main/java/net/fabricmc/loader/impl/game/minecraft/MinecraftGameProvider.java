@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import net.fabricmc.api.EnvType;
@@ -451,6 +453,27 @@ public class MinecraftGameProvider implements GameProvider {
 		try {
 			Class<?> c = loader.loadClass(targetClass);
 			Method m = c.getMethod("main", String[].class);
+			ServiceLoader<FileSystemProvider> serviceLoader = ServiceLoader.load(FileSystemProvider.class, loader);
+			List<FileSystemProvider> existingProviders = FileSystemProvider.installedProviders();
+
+			serviceLoaderLoop: for (FileSystemProvider newProvider : serviceLoader) {
+				if (newProvider instanceof ForwardingFsProvider) continue;
+
+				String scheme = newProvider.getScheme();
+				if (scheme == null || scheme.isEmpty()) continue;
+				if (scheme.equals("file")) continue;
+
+
+				for (FileSystemProvider provider : existingProviders) {
+					if (scheme.equals(provider.getScheme())) {
+						continue serviceLoaderLoop;
+					}
+				}
+
+				if (ForwardingFsProvider.allocate(newProvider) == null) {
+					throw new RuntimeException("can't allocate provider for "+newProvider);
+				}
+			}
 			m.invoke(null, (Object) arguments.toArray());
 		} catch (InvocationTargetException e) {
 			throw new FormattedException("Minecraft has crashed!", e.getCause());
