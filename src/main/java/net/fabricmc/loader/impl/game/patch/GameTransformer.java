@@ -76,6 +76,13 @@ public class GameTransformer {
 
 				try {
 					CpEntry entry = cp.getEntry(LoaderUtil.getClassFileName(name));
+
+					// Only use in when entry not available. Used for patching cpw's Mod Launcher.
+					InputStream in = GameTransformer.class.getResourceAsStream("/" + LoaderUtil.getClassFileName(name));
+					if (in != null && entry == null) {
+						return new ClassReader(in);
+					}
+
 					if (entry == null) return null;
 
 					try (InputStream is = entry.getInputStream()) {
@@ -101,6 +108,7 @@ public class GameTransformer {
 
 	/**
 	 * This must run first, contractually!
+	 *
 	 * @param className The class name,
 	 * @return The transformed class data.
 	 */

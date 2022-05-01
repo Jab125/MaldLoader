@@ -3,10 +3,18 @@
   "package": "net.fabricmc.minecraft.test.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "CommonDevLaunchHandlerMixin",
+    "CommonUserdevLaunchHandlerMixin",
+    "FMLLoaderMixin",
     "ForgeClientUserdevLaunchHandlerMixin",
+    "LaunchPluginHandlerMixin",
     "LaunchServiceHandlerMixin",
+    "ModDiscovererMixin",
     "ModularURLHandlerMixin",
-    "ModuleLayerHandlerMixin"
+    "ModuleLayerHandlerMixin",
+    "ServiceLoaderUtilsMixin",
+    "TransformationServiceDecoratorMixin",
+    "TransformationServicesHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
