@@ -29,18 +29,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.CodeSource;
 import java.security.cert.Certificate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
 import java.util.jar.Manifest;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.commons.Remapper;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.transformer.IMixinTransformer;
 
 import net.fabricmc.api.EnvType;
@@ -58,7 +62,7 @@ import net.fabricmc.loader.impl.util.UrlUtil;
 import net.fabricmc.loader.impl.util.log.Log;
 import net.fabricmc.loader.impl.util.log.LogCategory;
 
-final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> implements KnotClassLoaderInterface {
+public final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> implements KnotClassLoaderInterface {
 	private static final boolean LOG_CLASS_LOAD = System.getProperty(SystemProperties.DEBUG_LOG_CLASS_LOAD) != null;
 	private static final boolean LOG_CLASS_LOAD_ERRORS = LOG_CLASS_LOAD || System.getProperty(SystemProperties.DEBUG_LOG_CLASS_LOAD_ERRORS) != null;
 	private static final boolean LOG_TRANSFORM_ERRORS = System.getProperty(SystemProperties.DEBUG_LOG_TRANSFORM_ERRORS) != null;
@@ -90,6 +94,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 	private volatile Set<Path> validParentCodeSources = Collections.emptySet();
 	private final Map<Path, String[]> allowedPrefixes = new ConcurrentHashMap<>();
 	private final Set<String> parentSourcedClasses = Collections.newSetFromMap(new ConcurrentHashMap<>());
+	private final List<BiFunction<String, byte[], byte[]>> transformers = new ArrayList<>();
 
 	KnotClassDelegate(boolean isDevelopment, EnvType envType, T classLoader, ClassLoader parentClassLoader, GameProvider provider) {
 		this.isDevelopment = isDevelopment;
@@ -97,6 +102,10 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 		this.classLoader = classLoader;
 		this.parentClassLoader = parentClassLoader;
 		this.provider = provider;
+	}
+
+	public void addPostMixinTransformer(BiFunction<String, byte[], byte[]> transformer) {
+		this.transformers.add(transformer);
 	}
 
 	@Override
@@ -199,7 +208,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 				c = tryLoadClass(name, true);
 
 				if (c == null) {
-					throw new ClassNotFoundException("can't find class "+name);
+					throw new ClassNotFoundException("can't find class " + name);
 				} else if (LOG_CLASS_LOAD) {
 					Log.info(LogCategory.KNOT, "loaded class %s into target", name);
 				}
@@ -226,7 +235,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 						URL url = parentClassLoader.getResource(fileName);
 
 						if (url == null) { // no .class file
-							String msg = "can't find class "+name;
+							String msg = "can't find class " + name;
 							if (LOG_CLASS_LOAD_ERRORS) Log.warn(LogCategory.KNOT, msg);
 							throw new ClassNotFoundException(msg);
 						} else if (!isValidParentUrl(url, fileName)) { // available, but restricted
@@ -238,7 +247,8 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 							if (LOG_CLASS_LOAD_ERRORS) Log.warn(LogCategory.KNOT, msg);
 							throw new ClassNotFoundException(msg);
 						} else { // load from system cl
-							if (LOG_CLASS_LOAD) Log.info(LogCategory.KNOT, "loading class %s using the parent class loader", name);
+							if (LOG_CLASS_LOAD)
+								Log.info(LogCategory.KNOT, "loading class %s using the parent class loader", name);
 							c = parentClassLoader.loadClass(name);
 						}
 					} else if (LOG_CLASS_LOAD) {
@@ -300,7 +310,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 					}
 
 					if (!found) {
-						String msg = "class "+name+" is currently restricted from being loaded";
+						String msg = "class " + name + " is currently restricted from being loaded";
 						if (LOG_CLASS_LOAD_ERRORS) Log.warn(LogCategory.KNOT, msg);
 						throw new ClassNotFoundException(msg);
 					}
@@ -364,7 +374,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 				if (Files.isDirectory(path)) {
 					manifest = ManifestUtil.readManifest(path);
 				} else {
-					URLConnection connection = new URL("jar:" + path.toUri().toString() + "!/").openConnection();
+					URLConnection connection = new URL("jar:" + path.toUri() + "!/").openConnection();
 
 					if (connection instanceof JarURLConnection) {
 						manifest = ((JarURLConnection) connection).getManifest();
@@ -403,35 +413,74 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 	}
 
 	private byte[] getPostMixinClassByteArray(String name, boolean allowFromParent) {
-		byte[] transformedClassArray = getPreMixinClassByteArray(name, allowFromParent);
-//		if(name.contains("cpw") && transformedClassArray != null) {
-//			ClassWriter writer = new ClassWriter(0);
-//			new ClassReader(transformedClassArray).accept(new ClassRemapper(writer, new Remapper() {
-//				@Override
-//				public String map(String internalName) {
-//					if(internalName.equals("cpw/mods/cl/ModuleClassLoader")) {
-//						return "net/fabricmc/loader/impl/launch/knot/KnotClassLoader";
-//					}
-//					if(internalName.equals("cpw/mods/modlauncher/TransformingClassLoader")) {
-//						return "net/fabricmc/loader/impl/launch/knot/KnotClassLoader";
-//					}
-//					return super.map(internalName);
-//				}
-//			}), 0);
-//			transformedClassArray = writer.toByteArray();
-//		}
+		if(name.contains("Mixin")) {
+			System.out.println(name);
+		}
+
+		byte[] preMixinBytes = getPreMixinClassByteArray(name, allowFromParent);
+		if (name.contains("cpw") && preMixinBytes != null && !(name.contains("TransformingClassLoader") || name.contains("ModuleClassLoader"))) {
+			ClassWriter writer = new ClassWriter(0);
+			new ClassReader(preMixinBytes).accept(new ClassRemapper(writer, new Remapper() {
+				@Override
+				public String map(String internalName) {
+					if (internalName.equals("cpw/mods/cl/ModuleClassLoader")) {
+						return "net/fabricmc/loader/impl/launch/knot/KnotClassLoader";
+					}
+					if (internalName.equals("cpw/mods/modlauncher/TransformingClassLoader")) {
+						return "net/fabricmc/loader/impl/launch/knot/KnotClassLoader";
+					}
+					return super.map(internalName);
+				}
+			}), 0);
+			preMixinBytes = writer.toByteArray();
+		}
 		if (!transformInitialized || !canTransformClass(name)) {
-			return transformedClassArray;
+			return preMixinBytes;
 		}
 
 		try {
-			return getMixinTransformer().transformClassBytes(name, name, transformedClassArray);
+			byte[] postMixinBytes = getMixinTransformer().transformClassBytes(name, name, preMixinBytes);
+
+			boolean shouldApply = isValidPatchTarget(name);
+
+			if (shouldApply) {
+				for (BiFunction<String, byte[], byte[]> transformer : this.transformers) {
+					if (postMixinBytes != null) {
+						postMixinBytes = transformer.apply(name, postMixinBytes);
+					}
+				}
+			}
+			return postMixinBytes;
 		} catch (Throwable t) {
-			String msg = String.format("Mixin transformation of %s failed", name);
+			String msg = String.format("Mixin (And Possibly Other) transformations of %s failed", name);
 			if (LOG_TRANSFORM_ERRORS) Log.warn(LogCategory.KNOT, msg, t);
 
 			throw new RuntimeException(msg, t);
 		}
+	}
+
+	/**
+	 * // FIXME: ew no
+	 * No. I'm so sorry
+	 */
+	@Deprecated
+	private boolean isValidPatchTarget(String name) {
+		for (String comparison : List.of("cpw.mods.modlauncher", "EventBusEngine", "net.minecraftforge")) { // Add blacklist here
+			if (name.contains(comparison)) { // || name.contains("net.minecraftforge"))) {
+				if (!name.endsWith("Event")) {
+					if (name.contains("$") && name.contains("Event")) { // These checks are so sensitive
+						break;
+					}
+					if (name.contains("Recipe") || name.contains("Capability") || name.contains("Forge") || name.contains("RegistryEntry") || name.contains("class_6880")) {
+						break;
+					}
+					return false;
+				}
+				break;
+			}
+		}
+
+		return true;
 	}
 
 	@Override
@@ -443,7 +492,7 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 	 * Runs all the class transformers except mixin.
 	 */
 	private byte[] getPreMixinClassByteArray(String name, boolean allowFromParent) {
-		// some of the transformers rely on dot notation
+		// some transformers rely on dot notation
 		name = name.replace('/', '.');
 
 		if (!transformInitialized || !canTransformClass(name)) {
@@ -492,7 +541,8 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 			url = parentClassLoader.getResource(name);
 
 			if (!isValidParentUrl(url, name)) {
-				if (LOG_CLASS_LOAD) Log.info(LogCategory.KNOT, "refusing to load class %s at %s from parent class loader", name, getCodeSource(url, name));
+				if (LOG_CLASS_LOAD)
+					Log.info(LogCategory.KNOT, "refusing to load class %s at %s from parent class loader", name, getCodeSource(url, name));
 
 				return null;
 			}
@@ -524,7 +574,8 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 		try {
 			return (ClassLoader) ClassLoader.class.getMethod("getPlatformClassLoader").invoke(null); // Java 9+ only
 		} catch (NoSuchMethodException e) {
-			return new ClassLoader(null) { }; // fall back to boot cl
+			return new ClassLoader(null) {
+			}; // fall back to boot cl
 		} catch (ReflectiveOperationException e) {
 			throw new RuntimeException(e);
 		}
@@ -532,14 +583,19 @@ final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> impleme
 
 	interface ClassLoaderAccess {
 		void addUrlFwd(URL url);
+
 		URL findResourceFwd(String name);
 
 		Package getPackageFwd(String name);
+
 		Package definePackageFwd(String name, String specTitle, String specVersion, String specVendor, String implTitle, String implVersion, String implVendor, URL sealBase) throws IllegalArgumentException;
 
 		Object getClassLoadingLockFwd(String name);
+
 		Class<?> findLoadedClassFwd(String name);
+
 		Class<?> defineClassFwd(String name, byte[] b, int off, int len, CodeSource cs);
+
 		void resolveClassFwd(Class<?> cls);
 	}
 }

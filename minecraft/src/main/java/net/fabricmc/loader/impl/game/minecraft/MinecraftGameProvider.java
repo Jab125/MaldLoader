@@ -427,6 +427,7 @@ public class MinecraftGameProvider implements GameProvider {
 
 	@Override
 	public void unlockClassPath(FabricLauncher launcher) {
+		launcher.addToClassPath(Paths.get("C:/Users/hayde/.gradle/caches/transforms-3/2c7026324038d893d912ad2214d5a919/transformed/alfd-transformed/securejarhandler-0.9.61.jar"));
 		for (Path gameJar : gameJars) {
 			if (logJars.contains(gameJar)) {
 				launcher.setAllowedPrefixes(gameJar);

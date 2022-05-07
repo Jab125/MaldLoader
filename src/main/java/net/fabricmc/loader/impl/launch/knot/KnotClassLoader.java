@@ -26,8 +26,11 @@ import java.util.Enumeration;
 import java.util.Objects;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.game.GameProvider;
 import net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.ClassLoaderAccess;
+import net.fabricmc.loader.impl.util.log.Log;
+import net.fabricmc.loader.impl.util.log.LogCategory;
 
 // class name referenced by string constant in net.fabricmc.loader.impl.util.LoaderUtil.verifyNotInTargetCl
 public final class KnotClassLoader extends SecureClassLoader implements ClassLoaderAccess {
@@ -57,7 +60,7 @@ public final class KnotClassLoader extends SecureClassLoader implements ClassLoa
 		this.delegate = new KnotClassDelegate<>(isDevelopment, envType, this, originalLoader, provider);
 	}
 
-	KnotClassDelegate<?> getDelegate() {
+	public KnotClassDelegate<?> getDelegate() {
 		return delegate;
 	}
 
@@ -189,6 +192,14 @@ public final class KnotClassLoader extends SecureClassLoader implements ClassLoa
 	@Override
 	public void resolveClassFwd(Class<?> cls) {
 		super.resolveClass(cls);
+	}
+
+	/**
+	 * Used in FML
+	 */
+	@SuppressWarnings("unused")
+	public void setFallbackClassLoader(ClassLoader classLoader) {
+		Log.warn(LogCategory.KNOT, "Tried to set fallback classloader to " + classLoader);
 	}
 
 	static {

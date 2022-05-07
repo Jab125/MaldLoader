@@ -1,4 +1,4 @@
-package net.fabricmc.minecraft.test.mixin;
+package net.fabricmc.minecraft.test.mixin.modlauncher.launch;
 
 import cpw.mods.modlauncher.TransformationServiceDecorator;
 import cpw.mods.modlauncher.api.IEnvironment;

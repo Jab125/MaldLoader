@@ -183,6 +183,10 @@ abstract class ForwardingFsProvider extends FileSystemProvider {
 		parent.setAttribute(path, attribute, value, options);
 	}
 
+	public FileSystemProvider getParent() {
+		return this.parent;
+	}
+
 	private static ForwardingFsProvider[] instances = new ForwardingFsProvider[10];
 
 	private final int id;

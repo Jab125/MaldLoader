@@ -1,4 +1,4 @@
-package net.fabricmc.minecraft.test.mixin;
+package net.fabricmc.minecraft.test.mixin.modlauncher.launch;
 
 import cpw.mods.modlauncher.util.ServiceLoaderUtils;
 import org.spongepowered.asm.mixin.Mixin;

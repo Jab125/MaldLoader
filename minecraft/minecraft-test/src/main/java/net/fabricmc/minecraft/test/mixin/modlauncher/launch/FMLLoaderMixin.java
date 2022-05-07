@@ -1,4 +1,4 @@
-package net.fabricmc.minecraft.test.mixin;
+package net.fabricmc.minecraft.test.mixin.modlauncher.launch;
 
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.spongepowered.asm.mixin.Mixin;

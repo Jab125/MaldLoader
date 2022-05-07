@@ -1,16 +1,17 @@
-package net.fabricmc.minecraft.test.mixin;
+package net.fabricmc.minecraft.test.mixin.forge.launch;
 
-import java.util.ServiceLoader;
-
+import net.minecraftforge.fml.Bindings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(targets = "cpw/mods/modlauncher/LaunchServiceHandler")
-public class LaunchServiceHandlerMixin {
+import java.util.ServiceLoader;
+
+@Mixin(Bindings.class)
+public class BindingsMixin {
 
 	@Redirect(method = "lambda$new$0", at = @At(value = "INVOKE", target = "Ljava/util/ServiceLoader;load(Ljava/lang/ModuleLayer;Ljava/lang/Class;)Ljava/util/ServiceLoader;"))
-	private static <S> ServiceLoader<S> getServicesWithoutModules(ModuleLayer layer, Class<S> service) {
+	private static <S> ServiceLoader<S> loadServiceNoModule(ModuleLayer layer, Class<S> service) {
 		return ServiceLoader.load(service);
 	}
 }

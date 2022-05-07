@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.minecraft.test.mixin;
+package net.fabricmc.minecraft.test.mixin.modlauncher.launch;
 
 import java.lang.module.Configuration;
 import java.util.EnumMap;
@@ -24,7 +24,9 @@ import java.util.function.Function;
 
 import cpw.mods.modlauncher.ModuleLayerHandler;
 import cpw.mods.modlauncher.api.IModuleLayerManager;
-import me.hydos.copecw.KnotModuleClassLoader;
+
+import net.fabricmc.loader.impl.launch.knot.KnotClassLoader;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,8 +35,6 @@ import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.fabricmc.loader.impl.launch.knot.KnotClassLoader;
 
 @Mixin(value = ModuleLayerHandler.class, remap = false)
 public abstract class ModuleLayerHandlerMixin {
@@ -45,16 +45,12 @@ public abstract class ModuleLayerHandlerMixin {
 
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/lang/Class;getClassLoader()Ljava/lang/ClassLoader;"))
 	private ClassLoader nullCope(Class<?> clazz) {
-		return new KnotModuleClassLoader((KnotClassLoader) this.getClass().getClassLoader());
+		return this.getClass().getClassLoader();
 	}
 
 	@Inject(method = "getLayer", at = @At("HEAD"), cancellable = true)
 	private void checkExtraLayers(IModuleLayerManager.Layer layer, CallbackInfoReturnable<Optional<?>> cir) {
-		this.completedLayers.forEach((layer1, layerInfo) -> {
-			if (layer1.toString().equals(layer.toString())) {
-				cir.setReturnValue(Optional.of(ModuleLayer.empty()));
-			}
-		});
+		cir.setReturnValue(Optional.of(ModuleLayer.empty()));
 	}
 
 	@SuppressWarnings("InvalidInjectorMethodSignature")
@@ -76,5 +72,23 @@ public abstract class ModuleLayerHandlerMixin {
 	@Redirect(method = "buildLayer(Lcpw/mods/modlauncher/api/IModuleLayerManager$Layer;Ljava/util/function/BiFunction;)Lcpw/mods/modlauncher/ModuleLayerHandler$LayerInfo;", at = @At(value = "INVOKE", target = "Ljava/lang/ModuleLayer$Controller;layer()Ljava/lang/ModuleLayer;"))
 	private ModuleLayer stopFuckingUsingModulesCpw(ModuleLayer.Controller instance) {
 		return ModuleLayer.empty();
+	}
+
+	/**
+	 * @author hYdos
+	 * @reason Removing Module's so code is redundant
+	 */
+/*	@Overwrite
+	public ModuleLayerHandler.LayerInfo buildLayer(final IModuleLayerManager.Layer layer, BiFunction<Configuration, List<ModuleLayer>, ModuleClassLoader> classLoaderSupplier) {
+		final var classLoader = classLoaderSupplier.apply(Configuration.empty(), List.of());
+		completedLayers.put(layer, new ModuleLayerHandler.LayerInfo(ModuleLayer.empty(), classLoader));
+		classLoader.setFallbackClassLoader(completedLayers.get(IModuleLayerManager.Layer.BOOT).cl());
+		return new ModuleLayerHandler.LayerInfo(modController.layer(), classLoader);
+	}*/
+
+	@SuppressWarnings({"MixinAnnotationTarget", "InvalidInjectorMethodSignature"})
+	@Redirect(method = "lambda$buildLayer$6", at = @At(value = "NEW", args = "class=net/fabricmc/loader/impl/launch/knot/KnotClassLoader"))
+	private static KnotClassLoader useKnotCl(String findClassLoader, Configuration cl, List<ModuleLayer> descriptor) {
+		return (KnotClassLoader) ModuleLayerHandler.class.getClassLoader();
 	}
 }

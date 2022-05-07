@@ -6,13 +6,24 @@ loom {
 	}
 }
 
+configurations.all {
+	println it.getName()
+}
+
+// remove dependencies
+configurations.runtimeClasspath {
+	exclude group:"cpw.mods", module:"securejarhandler"
+}
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.18"
-	forge "net.minecraftforge:forge:1.18-38.0.17"
-	mappings "net.fabricmc:yarn:1.18+build.1:v2"
+	minecraft "com.mojang:minecraft:1.18.2"
+	forge "net.minecraftforge:forge:1.18.2-40.1.2"
+	mappings "net.fabricmc:yarn:1.18.2+build.3:v2"
 
 	implementation project(":minecraft")
+
+	// Overwrite what Arch Loom is providing for SecureJarHandler
+	// compileOnly("cpw.mods:securejarhandler:0.9.61")
 
 	// Required for mixin annotation processor
 	annotationProcessor "org.ow2.asm:asm:${project.asm_version}"

@@ -58,11 +58,6 @@ configurations {
 }
 
 dependencies {
-	// FML dependencies
-	implementation('net.minecraftforge:accesstransformers:8.0.4')
-	api('net.minecraftforge:forgespi:4.0.+')
-	api('net.minecraftforge:coremods:5.0.+')
-
 	// fabric-loader dependencies
 	api "org.ow2.asm:asm:${project.asm_version}"
 	api "org.ow2.asm:asm-analysis:${project.asm_version}"

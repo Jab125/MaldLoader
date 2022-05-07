@@ -1,11 +1,9 @@
-package net.fabricmc.minecraft.test.mixin;
+package net.fabricmc.minecraft.test.mixin.modlauncher.launch;
 
 import net.minecraftforge.fml.loading.targets.CommonUserdevLaunchHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-import java.io.File;
 
 @Mixin(CommonUserdevLaunchHandler.class)
 public class CommonUserdevLaunchHandlerMixin {
@@ -14,14 +12,6 @@ public class CommonUserdevLaunchHandlerMixin {
 	private String getClasspath(String key) {
 		if(key.equals("legacyClassPath")) {
 			key = "java.class.path";
-
-			String[] cp = System.getProperty(key).split(File.pathSeparator);
-			String newCp = "";
-			for (String lib : cp) {
-				if(lib.contains("spi")) continue;
-				newCp += lib + File.pathSeparator;
-			}
-			return newCp;
 		}
 
 		return System.getProperty(key);
