@@ -22,6 +22,7 @@ public class WrappedFgModContainer extends ModContainer {
 
 	public WrappedFgModContainer(net.fabricmc.loader.api.ModContainer fabricMod) {
 		super(new IModInfoWrapper(fabricMod));
+		contextExtension = () -> null;
 	}
 
 	@Override

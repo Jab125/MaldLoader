@@ -56,7 +56,7 @@ public class TransformationServicesHandlerMixin {
 		Constructor<ClassTransformer> cst = (Constructor<ClassTransformer>) ClassTransformer.class.getDeclaredConstructors()[1];
 		cst.setAccessible(true);
 		TransformerAuditTrail tat = new TransformerAuditTrail();
-		var classTransformer = cst.newInstance(transformStore, pluginHandler, this.getClass().getClassLoader(), tat);
+		ClassTransformer classTransformer = cst.newInstance(transformStore, pluginHandler, this.getClass().getClassLoader(), tat);
 
 		// Slow but do we have a choice?
 		knot.getDelegate().addPostMixinTransformer((className, bytes) -> {
@@ -66,7 +66,8 @@ public class TransformationServicesHandlerMixin {
 				transform.setAccessible(true);
 				return (byte[]) transform.invoke(classTransformer, bytes, className, "classloading");
 			} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-				throw new RuntimeException(e);
+//				throw new RuntimeException(e);
+				return bytes;
 			}
 		});
 		cir.setReturnValue(knot);

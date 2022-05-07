@@ -9,6 +9,7 @@
     "forge.launch.ForgeVersionMixin",
     "forge.launch.MinecraftModLanguageProvider$MinecraftModTargetMixin",
     "forge.launch.ModStateManagerMixin",
+    "forge.launch.ModLoadingContextMixin",
     "forge.modloading.CommonLaunchHandlerMixin",
     "forge.modloading.ModsFolderLocatorMixin",
     "forge.modsharing.BrandingControlMixin",

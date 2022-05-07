@@ -465,7 +465,7 @@ public final class KnotClassDelegate<T extends ClassLoader & ClassLoaderAccess> 
 	 */
 	@Deprecated
 	private boolean isValidPatchTarget(String name) {
-		for (String comparison : List.of("cpw.mods.modlauncher", "EventBusEngine", "net.minecraftforge")) { // Add blacklist here
+		for (String comparison : List.of("cpw.mods.modlauncher", "EventBusEngine", "net.minecraftforge", "org.slf4j")) { // Add blacklist here
 			if (name.contains(comparison)) { // || name.contains("net.minecraftforge"))) {
 				if (!name.endsWith("Event")) {
 					if (name.contains("$") && name.contains("Event")) { // These checks are so sensitive
