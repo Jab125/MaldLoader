@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(Launcher.class)
+@Mixin(value = Launcher.class, remap = false)
 public class LauncherMixin {
 
 	@Redirect(method = "run", at = @At(value = "INVOKE", target = "Lcpw/mods/modlauncher/ModuleLayerHandler;buildLayer(Lcpw/mods/modlauncher/api/IModuleLayerManager$Layer;)Lcpw/mods/modlauncher/ModuleLayerHandler$LayerInfo;"))

@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ModLoadingContext.class)
+@Mixin(value = ModLoadingContext.class, remap = false)
 public class ModLoadingContextMixin {
 	@Inject(method = "setActiveContainer", at = @At("HEAD"), cancellable = true)
 	public void ignoreNullContainer(ModContainer container, CallbackInfo ci) {

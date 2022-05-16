@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(CommonUserdevLaunchHandler.class)
+@Mixin(value = CommonUserdevLaunchHandler.class, remap = false)
 public class CommonUserdevLaunchHandlerMixin {
 
 	@Redirect(method = "getMinecraftPaths", at = @At(value = "INVOKE", target = "Ljava/lang/System;getProperty(Ljava/lang/String;)Ljava/lang/String;"))

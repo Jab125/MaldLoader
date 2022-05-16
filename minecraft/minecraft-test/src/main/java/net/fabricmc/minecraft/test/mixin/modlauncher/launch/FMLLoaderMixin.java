@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.ServiceLoader;
 
-@Mixin(FMLLoader.class)
+@Mixin(value = FMLLoader.class, remap = false)
 public class FMLLoaderMixin {
 
 	@Redirect(method = "onInitialLoad", at = @At(value = "INVOKE", target = "Ljava/lang/Package;isCompatibleWith(Ljava/lang/String;)Z"))

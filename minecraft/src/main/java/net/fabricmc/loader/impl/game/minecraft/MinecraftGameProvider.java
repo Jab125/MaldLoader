@@ -17,6 +17,8 @@
 package net.fabricmc.loader.impl.game.minecraft;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -481,16 +483,11 @@ public class MinecraftGameProvider implements GameProvider {
 			m.invoke(null, (Object) arguments.toArray());
 		} catch (InvocationTargetException e) {
 			throw new FormattedException("Minecraft has crashed!", e.getCause());
-		} catch (ReflectiveOperationException e) {
-			invoker = MethodHandles.lookup().findStatic(c, "main", MethodType.methodType(void.class, String[].class));
 		} catch (NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
 			throw new FormattedException("Failed to start Minecraft", e);
+			//invoker = MethodHandles.lookup().findStatic(null, "main", MethodType.methodType(void.class, String[].class));
 		}
 
-		try {
-			invoker.invokeExact(arguments.toArray());
-		} catch (Throwable t) {
-			throw new FormattedException("Minecraft has crashed!", t);
-		}
+		// TODO
 	}
 }

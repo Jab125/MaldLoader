@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(LanguageLoadingProvider.class)
+@Mixin(value = LanguageLoadingProvider.class, remap = false)
 public abstract class LanguageLoadingProviderMixin {
 
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/ServiceLoader;load(Ljava/lang/ModuleLayer;Ljava/lang/Class;)Ljava/util/ServiceLoader;"))

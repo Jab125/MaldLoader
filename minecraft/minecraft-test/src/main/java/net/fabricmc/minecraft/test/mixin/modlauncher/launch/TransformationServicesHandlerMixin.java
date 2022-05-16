@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.fabricmc.loader.impl.launch.knot.KnotClassLoader;
 
-@Mixin(targets = "cpw/mods/modlauncher/TransformationServicesHandler")
+@Mixin(targets = "cpw/mods/modlauncher/TransformationServicesHandler", remap = false)
 public class TransformationServicesHandlerMixin {
 
 	@Shadow

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-@Mixin(BrandingControl.class)
+@Mixin(value = BrandingControl.class, remap = false)
 public class BrandingControlMixin {
 
 	@Redirect(method = "computeBranding", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2))

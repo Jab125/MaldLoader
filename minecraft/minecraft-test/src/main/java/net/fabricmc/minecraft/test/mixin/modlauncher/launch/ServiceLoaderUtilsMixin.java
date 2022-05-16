@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ServiceLoaderUtils.class)
+@Mixin(value = ServiceLoaderUtils.class, remap = false)
 public class ServiceLoaderUtilsMixin {
 
 	@Inject(method = "fileNameFor", at = @At("HEAD"), cancellable = true)

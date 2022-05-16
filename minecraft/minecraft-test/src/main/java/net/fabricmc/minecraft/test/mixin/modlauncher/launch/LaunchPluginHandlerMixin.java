@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-@Mixin(LaunchPluginHandler.class)
+@Mixin(value = LaunchPluginHandler.class, remap = false)
 public class LaunchPluginHandlerMixin {
 
 	@Shadow

@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 
 import java.util.Optional;
 
-@Mixin(Environment.class)
+@Mixin(value = Environment.class, remap = false)
 public class EnvironmentMixin {
 	private static final DummyModuleLayerManager LAYER_MANAGER = new DummyModuleLayerManager();
 

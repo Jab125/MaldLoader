@@ -15,6 +15,10 @@ configurations.runtimeClasspath {
 	exclude group:"cpw.mods", module:"securejarhandler"
 }
 
+configurations.all {
+	exclude group:'ca.weblite', module:'java-objc-bridge'
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:1.18.2"
 	forge "net.minecraftforge:forge:1.18.2-40.1.2"

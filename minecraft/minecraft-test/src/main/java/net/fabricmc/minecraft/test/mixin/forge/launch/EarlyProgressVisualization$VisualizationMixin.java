@@ -8,7 +8,7 @@ import net.minecraftforge.client.loading.NoVizFallback;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
-@Mixin(targets = "net/minecraftforge/fml/loading/progress/EarlyProgressVisualization$Visualization")
+@Mixin(targets = "net/minecraftforge/fml/loading/progress/EarlyProgressVisualization$Visualization", remap = false)
 public interface EarlyProgressVisualization$VisualizationMixin {
 
 	/**

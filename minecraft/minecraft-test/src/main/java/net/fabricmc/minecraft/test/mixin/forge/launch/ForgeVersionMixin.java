@@ -11,7 +11,7 @@ import java.util.Optional;
 /**
  * TODO: make this find forge version through Fabric API
  */
-@Mixin(ForgeVersion.class)
+@Mixin(value = ForgeVersion.class, remap = false)
 public class ForgeVersionMixin {
 
 	@Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/loading/JarVersionLookupHandler;getSpecificationVersion(Ljava/lang/Class;)Ljava/util/Optional;"))

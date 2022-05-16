@@ -96,7 +96,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 	private Path gameDir;
 	private Path configDir;
 
-	private FabricLoaderImpl() { }
+	private FabricLoaderImpl() { System.out.println("LOADED! FABRIC"); }
 
 	/**
 	 * Freeze the FabricLoader, preventing additional mods from being loaded.

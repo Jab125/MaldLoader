@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
-@Mixin(MinecraftModLanguageProvider.MinecraftModTarget.class)
+@Mixin(value = MinecraftModLanguageProvider.MinecraftModTarget.class, remap = false)
 public class MinecraftModLanguageProvider$MinecraftModTargetMixin implements IModLanguageProvider.IModLanguageLoader {
 
 	private static final Logger LOGGER = LogManager.getLogger();

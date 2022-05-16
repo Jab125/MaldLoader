@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(ForgeClientUserdevLaunchHandler.class)
+@Mixin(value = ForgeClientUserdevLaunchHandler.class, remap = false)
 public class ForgeClientUserdevLaunchHandlerMixin {
 
 	@Redirect(method = "lambda$launchService$0", at = @At(value = "INVOKE", target = "Ljava/util/Optional;orElseThrow()Ljava/lang/Object;"))

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
-@Mixin(CommonDevLaunchHandler.class)
+@Mixin(value = CommonDevLaunchHandler.class, remap = false)
 public abstract class CommonDevLaunchHandlerMixin {
 
 	@Shadow

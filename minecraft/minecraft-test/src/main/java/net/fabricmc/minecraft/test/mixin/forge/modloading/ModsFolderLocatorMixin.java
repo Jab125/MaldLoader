@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 import static cpw.mods.modlauncher.api.LamdbaExceptionUtils.uncheck;
 
-@Mixin(ModsFolderLocator.class)
+@Mixin(value = ModsFolderLocator.class, remap = false)
 public abstract class ModsFolderLocatorMixin extends AbstractJarFileLocator {
 
 	@Shadow

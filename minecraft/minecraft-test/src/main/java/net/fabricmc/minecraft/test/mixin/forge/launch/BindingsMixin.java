@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.ServiceLoader;
 
-@Mixin(Bindings.class)
+@Mixin(value = Bindings.class, remap = false)
 public class BindingsMixin {
 
 	@Redirect(method = "lambda$new$0", at = @At(value = "INVOKE", target = "Ljava/util/ServiceLoader;load(Ljava/lang/ModuleLayer;Ljava/lang/Class;)Ljava/util/ServiceLoader;"))
