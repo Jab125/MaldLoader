@@ -3,6 +3,9 @@
   "id": "minecraft-test",
   "name": "Minecraft Test Mod",
   "version": "1.0.0",
+  "entrypoints": {
+    "main": ["me.hydos.Main"]
+  },
   "mixins": [
     {
       "config": "fabricmc.test.mixins.client.json",

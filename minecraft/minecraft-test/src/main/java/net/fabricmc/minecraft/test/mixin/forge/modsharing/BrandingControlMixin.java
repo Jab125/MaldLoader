@@ -15,6 +15,6 @@ public class BrandingControlMixin {
 	@Redirect(method = "computeBranding", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList$Builder;add(Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList$Builder;", ordinal = 2))
 	private static <E> ImmutableList.Builder<E> replaceMcpWithFabricBranding(ImmutableList.Builder<E> instance, E element) {
 		ModContainer loaderMod = FabricLoader.getInstance().getModContainer("fabricloader").orElseThrow();
-		return instance.add((E) ("Fabric " + loaderMod.getMetadata().getVersion()));
+		return instance.add((E) ("Fabric Loader " + loaderMod.getMetadata().getVersion()));
 	}
 }
