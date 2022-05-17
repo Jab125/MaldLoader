@@ -66,7 +66,7 @@ public abstract class ModListMixin {
 	 * @reason To let FML know about Fabric mods.
 	 */
 	@Overwrite
-	void setLoadedMods(final List<ModContainer> modContainers) {
+	public void setLoadedMods(final List<ModContainer> modContainers) {
 		List<WrappedFgModContainer> fabricModContainers = FabricLoader.getInstance().getAllMods().stream().map(WrappedFgModContainer::new).filter(
 				mod -> !mod.getModId().equals("minecraft")
 		).toList();

@@ -25,7 +25,7 @@ public class TransformationServiceDecoratorMixin {
 	 * @reason Bug With Classloaders. Mixin not supported on forge atm.
 	 */
 	@Overwrite
-	void onInitialize(IEnvironment environment) {
+	public void onInitialize(IEnvironment environment) {
 		LOGGER.debug("Initializing transformation service {}", this.service::name);
 		if (this.service.getClass().getName().contains("FMLServiceProvider")) {
 			this.service.initialize(environment);

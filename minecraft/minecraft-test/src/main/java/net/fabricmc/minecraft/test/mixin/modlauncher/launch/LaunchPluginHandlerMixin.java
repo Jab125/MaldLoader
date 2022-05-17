@@ -31,7 +31,7 @@ public class LaunchPluginHandlerMixin {
 	 * @reason dont enable mixin plugin
 	 */
 	@Overwrite
-	void offerScanResultsToPlugins(List<SecureJar> scanResults) {
+	public void offerScanResultsToPlugins(List<SecureJar> scanResults) {
 		plugins.forEach((n, p) -> {
 			if (!n.equals("mixin")) {
 				p.addResources(scanResults);
