@@ -85,6 +85,11 @@ public final class BuiltinModMetadata extends AbstractModMetadata {
 	}
 
 	@Override
+	public Map<String, Version> getProvidesWithVersion() {
+		return Collections.emptyMap();
+	}
+
+	@Override
 	public Version getVersion() {
 		return version;
 	}
