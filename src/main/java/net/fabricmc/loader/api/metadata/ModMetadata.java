@@ -57,6 +57,8 @@ public interface ModMetadata {
 	 */
 	Collection<String> getProvides();
 
+	Map<String, Version> getProvidesWithVersion();
+
 	/**
 	 * Returns the mod's version.
 	 */

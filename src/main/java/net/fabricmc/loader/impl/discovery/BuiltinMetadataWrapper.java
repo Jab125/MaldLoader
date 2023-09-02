@@ -63,6 +63,11 @@ class BuiltinMetadataWrapper extends AbstractModMetadata implements LoaderModMet
 	}
 
 	@Override
+	public Map<String, Version> getProvidesWithVersion() {
+		return parent.getProvidesWithVersion();
+	}
+
+	@Override
 	public Version getVersion() {
 		return version;
 	}

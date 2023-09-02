@@ -16,27 +16,15 @@
 
 package net.fabricmc.loader.impl.metadata;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.SortedMap;
-import java.util.stream.Collectors;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.ContactInformation;
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.api.metadata.ModDependency;
-import net.fabricmc.loader.api.metadata.ModEnvironment;
-import net.fabricmc.loader.api.metadata.Person;
+import net.fabricmc.loader.api.metadata.*;
 import net.fabricmc.loader.impl.util.log.Log;
 import net.fabricmc.loader.impl.util.log.LogCategory;
 
-final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetadata {
+import java.util.*;
+
+final class V2ModMetadata extends AbstractModMetadata implements LoaderModMetadata {
 	static final IconEntry NO_ICON = size -> Optional.empty();
 
 	// Required values
@@ -44,9 +32,7 @@ final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetada
 	private Version version;
 
 	// Optional (id provides)
-	private final Collection<String> provides;
-
-	private final Map<String, Version> providesWithVersion;
+	private final Map<String, Version> provides;
 
 	// Optional (mod loading)
 	private final ModEnvironment environment;
@@ -77,18 +63,17 @@ final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetada
 	// Optional (custom values)
 	private final Map<String, CustomValue> customValues;
 
-	V1ModMetadata(String id, Version version, Collection<String> provides,
-			ModEnvironment environment, Map<String, List<EntrypointMetadata>> entrypoints, Collection<NestedJarEntry> jars,
-			Collection<MixinEntry> mixins, /* @Nullable */ String accessWidener,
-			Collection<ModDependency> dependencies, boolean hasRequires,
+	V2ModMetadata(String id, Version version, Map<String, Version> provides,
+                  ModEnvironment environment, Map<String, List<EntrypointMetadata>> entrypoints, Collection<NestedJarEntry> jars,
+                  Collection<MixinEntry> mixins, /* @Nullable */ String accessWidener,
+                  Collection<ModDependency> dependencies, boolean hasRequires,
 			/* @Nullable */ String name, /* @Nullable */String description,
-			Collection<Person> authors, Collection<Person> contributors, /* @Nullable */ContactInformation contact, Collection<String> license, IconEntry icon,
-			Map<String, String> languageAdapters,
-			Map<String, CustomValue> customValues) {
+                  Collection<Person> authors, Collection<Person> contributors, /* @Nullable */ContactInformation contact, Collection<String> license, IconEntry icon,
+                  Map<String, String> languageAdapters,
+                  Map<String, CustomValue> customValues) {
 		this.id = id;
 		this.version = version;
-		this.provides = Collections.unmodifiableCollection(provides);
-		this.providesWithVersion = this.provides.stream().collect(Collectors.toMap(provide -> provide, provide -> this.version, (a, b) -> b));
+		this.provides = Collections.unmodifiableMap(provides);
 		this.environment = environment;
 		this.entrypoints = Collections.unmodifiableMap(entrypoints);
 		this.jars = Collections.unmodifiableCollection(jars);
@@ -119,7 +104,7 @@ final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetada
 		if (icon != null) {
 			this.icon = icon;
 		} else {
-			this.icon = V1ModMetadata.NO_ICON;
+			this.icon = V2ModMetadata.NO_ICON;
 		}
 
 		this.languageAdapters = Collections.unmodifiableMap(languageAdapters);
@@ -143,12 +128,12 @@ final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetada
 
 	@Override
 	public Collection<String> getProvides() {
-		return this.provides;
+		return this.provides.keySet();
 	}
 
 	@Override
 	public Map<String, Version> getProvidesWithVersion() {
-		return this.providesWithVersion;
+		return this.provides;
 	}
 
 	@Override
