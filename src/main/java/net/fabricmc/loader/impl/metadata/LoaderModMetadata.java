@@ -53,4 +53,6 @@ public interface LoaderModMetadata extends net.fabricmc.loader.metadata.LoaderMo
 
 	void setVersion(Version version);
 	void setDependencies(Collection<ModDependency> dependencies);
+
+	LoaderModMetadata copy();
 }

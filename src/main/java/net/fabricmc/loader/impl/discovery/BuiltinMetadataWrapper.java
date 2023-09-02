@@ -93,6 +93,11 @@ class BuiltinMetadataWrapper extends AbstractModMetadata implements LoaderModMet
 	}
 
 	@Override
+	public LoaderModMetadata copy() {
+		return new BuiltinMetadataWrapper(parent);
+	}
+
+	@Override
 	public String getName() {
 		return parent.getName();
 	}

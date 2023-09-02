@@ -64,7 +64,7 @@ public class ModResolver {
 		for (ModCandidate mod : allModsSorted) {
 			modsById.computeIfAbsent(mod.getId(), ignore -> new ArrayList<>()).add(mod);
 
-			for (String provided : mod.getProvides()) {
+			for (String provided : mod.getProvides().keySet()) {
 				modsById.computeIfAbsent(provided, ignore -> new ArrayList<>()).add(mod);
 			}
 		}
@@ -258,7 +258,7 @@ public class ModResolver {
 
 		allModsSorted.removeAll(modsById.remove(mod.getId()));
 
-		for (String provided : mod.getProvides()) {
+		for (String provided : mod.getProvides().keySet()) {
 			allModsSorted.removeAll(modsById.remove(provided));
 		}
 	}
@@ -267,7 +267,7 @@ public class ModResolver {
 		ModCandidate prev = selectedMods.put(mod.getId(), mod);
 		if (prev != null) throw new ModResolutionException("duplicate mod %s", mod.getId());
 
-		for (String provided : mod.getProvides()) {
+		for (String provided : mod.getProvides().keySet()) {
 			prev = selectedMods.put(provided, mod);
 			if (prev != null) throw new ModResolutionException("duplicate mod %s", provided);
 		}

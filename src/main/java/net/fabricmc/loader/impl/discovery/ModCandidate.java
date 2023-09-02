@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -145,8 +146,8 @@ public final class ModCandidate implements DomainObject.Mod {
 		return metadata.getVersion();
 	}
 
-	public Collection<String> getProvides() {
-		return metadata.getProvides();
+	public Map<String, Version> getProvides() {
+		return metadata.getProvidesWithVersion();
 	}
 
 	public boolean isBuiltin() {

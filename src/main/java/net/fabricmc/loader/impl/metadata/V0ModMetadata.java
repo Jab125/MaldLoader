@@ -137,6 +137,11 @@ final class V0ModMetadata extends AbstractModMetadata implements LoaderModMetada
 		this.dependencies = Collections.unmodifiableCollection(dependencies);
 	}
 
+	@Override
+	public LoaderModMetadata copy() {
+		return new V0ModMetadata(id, version, dependencies, mixins, environment, initializer, initializers, name, description, authors, contributors, links, license);
+	}
+
 	// General metadata
 
 	@Override
