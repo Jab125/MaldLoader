@@ -137,6 +137,8 @@ public final class ModMetadataParser {
 
 	private static LoaderModMetadata readModMetadata(JsonReader reader, int schemaVersion) throws IOException, ParseMetadataException {
 		switch (schemaVersion) {
+		case 2:
+			return V2ModMetadataParser.parse(reader);
 		case 1:
 			return V1ModMetadataParser.parse(reader);
 		case 0:
