@@ -16,13 +16,23 @@
 
 package net.fabricmc.loader.impl.metadata;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.SortedMap;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.metadata.*;
+import net.fabricmc.loader.api.metadata.ContactInformation;
+import net.fabricmc.loader.api.metadata.CustomValue;
+import net.fabricmc.loader.api.metadata.ModDependency;
+import net.fabricmc.loader.api.metadata.ModEnvironment;
+import net.fabricmc.loader.api.metadata.Person;
 import net.fabricmc.loader.impl.util.log.Log;
 import net.fabricmc.loader.impl.util.log.LogCategory;
-
-import java.util.*;
 
 final class V2ModMetadata extends AbstractModMetadata implements LoaderModMetadata {
 	static final IconEntry NO_ICON = size -> Optional.empty();
@@ -64,13 +74,13 @@ final class V2ModMetadata extends AbstractModMetadata implements LoaderModMetada
 	private final Map<String, CustomValue> customValues;
 
 	V2ModMetadata(String id, Version version, Map<String, Version> provides,
-                  ModEnvironment environment, Map<String, List<EntrypointMetadata>> entrypoints, Collection<NestedJarEntry> jars,
-                  Collection<MixinEntry> mixins, /* @Nullable */ String accessWidener,
-                  Collection<ModDependency> dependencies, boolean hasRequires,
-			/* @Nullable */ String name, /* @Nullable */String description,
-                  Collection<Person> authors, Collection<Person> contributors, /* @Nullable */ContactInformation contact, Collection<String> license, IconEntry icon,
-                  Map<String, String> languageAdapters,
-                  Map<String, CustomValue> customValues) {
+				ModEnvironment environment, Map<String, List<EntrypointMetadata>> entrypoints, Collection<NestedJarEntry> jars,
+				Collection<MixinEntry> mixins, /* @Nullable */ String accessWidener,
+				Collection<ModDependency> dependencies, boolean hasRequires,
+				/* @Nullable */ String name, /* @Nullable */String description,
+				Collection<Person> authors, Collection<Person> contributors, /* @Nullable */ContactInformation contact, Collection<String> license, IconEntry icon,
+				Map<String, String> languageAdapters,
+				Map<String, CustomValue> customValues) {
 		this.id = id;
 		this.version = version;
 		this.provides = Collections.unmodifiableMap(provides);

@@ -19,7 +19,6 @@ package net.fabricmc.loader.impl.metadata;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -183,7 +182,7 @@ final class V1ModMetadata extends AbstractModMetadata implements LoaderModMetada
 
 	@Override
 	public LoaderModMetadata copy() {
-		return new V1ModMetadata(id, version,provides, environment, entrypoints, jars, mixins, accessWidener, dependencies, hasRequires, name, description, authors, contributors, contact, license, icon, languageAdapters, customValues);
+		return new V1ModMetadata(id, version, provides, environment, entrypoints, jars, mixins, accessWidener, dependencies, hasRequires, name, description, authors, contributors, contact, license, icon, languageAdapters, customValues);
 	}
 
 	// General metadata

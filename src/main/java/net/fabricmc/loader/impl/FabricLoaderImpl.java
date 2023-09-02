@@ -33,8 +33,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.fabricmc.loader.api.Version;
-
 import org.objectweb.asm.Opcodes;
 
 import net.fabricmc.accesswidener.AccessWidener;
@@ -44,6 +42,7 @@ import net.fabricmc.loader.api.LanguageAdapter;
 import net.fabricmc.loader.api.MappingResolver;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.ObjectShare;
+import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.fabricmc.loader.impl.discovery.ArgumentModCandidateFinder;
 import net.fabricmc.loader.impl.discovery.ClasspathModCandidateFinder;
@@ -427,6 +426,7 @@ public final class FabricLoaderImpl extends net.fabricmc.loader.FabricLoader {
 				modMap.put(provides.getKey(), container);
 				continue;
 			}
+
 			ModContainerImpl providesContainer = new ModContainerImpl(candidate);
 			LoaderModMetadata copiedMetadata = candidate.getMetadata().copy();
 			copiedMetadata.setVersion(provides.getValue());

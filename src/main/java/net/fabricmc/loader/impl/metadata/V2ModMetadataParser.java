@@ -239,22 +239,25 @@ final class V2ModMetadataParser {
 				reader.beginObject();
 				String id = null;
 				String version = null;
+
 				while (reader.hasNext()) {
 					final String entryKey = reader.nextName();
 					switch (entryKey) {
-						case "id":
-							id = reader.nextString();
-							break;
-						case "version":
-							version = reader.nextString();
-							break;
-						default:
-							warnings.add(new ParseWarning(reader.getLineNumber(), reader.getColumn(), entryKey, "Invalid entry in provides metadata"));
-							reader.skipValue();
-							break;
+					case "id":
+						id = reader.nextString();
+						break;
+					case "version":
+						version = reader.nextString();
+						break;
+					default:
+						warnings.add(new ParseWarning(reader.getLineNumber(), reader.getColumn(), entryKey, "Invalid entry in provides metadata"));
+						reader.skipValue();
+						break;
 					}
 				}
+
 				reader.endObject();
+
 				try {
 					provides.put(id, VersionParser.parse(version, false));
 				} catch (VersionParsingException e) {
@@ -265,7 +268,6 @@ final class V2ModMetadataParser {
 			} else {
 				throw new ParseMetadataException("Provided must be a string or an object", reader);
 			}
-
 		}
 
 		reader.endArray();
